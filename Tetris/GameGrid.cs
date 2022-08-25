@@ -54,6 +54,7 @@ namespace Tetris
             return true;
         }
 
+        // method to check if an entire row is empty
         public bool IsRowEmpty(int r)
         {
             for (int c = 0; c < Columns; c++)
