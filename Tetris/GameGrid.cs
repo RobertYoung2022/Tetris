@@ -14,10 +14,10 @@ namespace Tetris
         public int Columns { get; }
 
         // index for access to array
-        public int this[int r, int c]
+        public int this[int row, int column]
         {
-            get => grid[r, c];
-            set => grid[r, c] = value;
+            get => grid[row, column];
+            set => grid[row, column] = value;
             
         }
 
@@ -30,23 +30,23 @@ namespace Tetris
         }
 
         // check if a given row is inside the column or not
-        public bool IsInside(int r, int c)
+        public bool IsInside(int row, int column)
         {
-            return r >= 0 && r < Rows && c >= 0 && c < Columns;
+            return row >= 0 && row < Rows && column >= 0 && column < Columns;
         }
 
         // method to check if a given cell is empty or not
-        public bool IsEmpty(int r, int c)
+        public bool IsEmpty(int row, int column)
         {
-            return IsInside(r, c) && grid[r, c] == 0;
+            return IsInside(row, column) && grid[row, column] == 0;
         }
 
         // method to check if an entire row is full
-        public bool IsRowFull(int r)
+        public bool IsRowFull(int row)
         {
-            for (int c = 0; c < Columns; c++)
+            for (int column = 0; column < Columns; column++)
             {
-                if (grid[r ,c] == 0)
+                if (grid[row ,column] == 0)
                 {
                     return false;
                 }
@@ -55,16 +55,53 @@ namespace Tetris
         }
 
         // method to check if an entire row is empty
-        public bool IsRowEmpty(int r)
+        public bool IsRowEmpty(int row)
         {
-            for (int c = 0; c < Columns; c++)
+            for (int column = 0; column < Columns; column++)
             {
-                if (grid[r, c] != 0)
+                if (grid[row, column] != 0)
                 {
                     return false;
                 }
             }
             return true;
+        }
+
+        private void ClearRow(int row)
+        {
+            for (int column = 0; column < Columns; column++)
+            {
+                grid[row, column] = 0;
+            }
+
+        }
+
+        private void MoveRowDown(int row, int numRows)
+        {
+            for (int column = 0; column < Columns; column++)
+            {
+                grid[row + numRows, column] = grid[row, column];
+                grid[row, column] = 0;
+            }
+        }
+
+        public int ClearFullRows()
+        {
+            int cleared = 0;
+
+            for (int row = Rows - 1; row >= 0; row--)
+            {
+                if (IsRowFull(row))
+                {
+                    ClearRow(row);
+                    cleared++;
+                }
+                else if (cleared > 0)
+                {
+                    MoveRowDown(row, cleared);
+                }
+            }
+            return cleared;
         }
     }
 }
